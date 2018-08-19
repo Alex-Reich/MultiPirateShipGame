@@ -1,6 +1,7 @@
 var express = require('express'); // Express contains some boilerplate to for routing and such
 var app = express();
 var http = require('http').Server(app);
+var io = require('socket.io')(http); // Make sure to put this after http has been defined
 
 // Serve the index page 
 app.get("/", function (request, response) {
