@@ -50,7 +50,7 @@
                     this.sprite.rotation += dir * 0.1;
 
                     // Move forward
-                    if(game.input.keyboard.isDown(Phaser.Keyboard.W) || game.input.keyboard.isDown(Phaser.Keyboard.UP)){
+                    if(game.input.keyboard.isDown(Phaser.Keyboard.W) || game.input.keyboard.isDown(Phaser.Keyboard.UP) || game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
                         this.speed_x += Math.cos(this.sprite.rotation + Math.PI/2) * this.speed;
                         this.speed_y += Math.sin(this.sprite.rotation + Math.PI/2) * this.speed;
                     }
