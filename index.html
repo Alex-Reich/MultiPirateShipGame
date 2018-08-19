@@ -152,8 +152,8 @@
                 // Update bullets 
                 for(var i=0;i<bullet_array.length;i++){
                     var bullet = bullet_array[i];
-                    bullet.sprite.x += bullet.speed_x; 
-                    bullet.sprite.y += bullet.speed_y; 
+                    bullet.sprite.x += bullet.speed_x *0.25; 
+                    bullet.sprite.y += bullet.speed_y *0.25; 
                     // Remove if it goes too far off screen 
                     if(bullet.sprite.x < -10 || bullet.sprite.x > WORLD_SIZE.w || bullet.sprite.y < -10 || bullet.sprite.y > WORLD_SIZE.h){
                         bullet.sprite.destroy();
