@@ -14,3 +14,7 @@ http.listen(app.get('port'), function(){
   console.log('listening on port',app.get('port'));
 });
 
+// Tell Socket.io to start accepting connections
+io.on('connection', function(socket){
+  console.log("New client has connected with id:",socket.id);
+})
