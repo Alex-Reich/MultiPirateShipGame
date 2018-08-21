@@ -130,7 +130,6 @@
                 }
             }
 
-            var socket = io(); // This triggers the 'connection' event on the server
 
             // Create player
             var player_ship_type = String(1);
@@ -144,6 +143,8 @@
             game.camera.y = player.sprite.y - WINDOW_HEIGHT / 2;
 
 
+            var socket = io(); // This triggers the 'connection' event on the server
+            socket.emit('new-player',{x:player.sprite.x,y:player.sprite.y,angle:player.sprite.rotation})
         }
 
         function GameLoop() {

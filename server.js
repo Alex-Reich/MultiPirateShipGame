@@ -17,4 +17,8 @@ http.listen(app.get('port'), function(){
 // Tell Socket.io to start accepting connections
 io.on('connection', function(socket){
   console.log("New client has connected with id:",socket.id);
+  socket.on('new-player',function(state_data){ // Listen for new-player event on this client 
+    console.log("New player has state:",state_data);
+    socket.broadcast.emit('create-player',state_data);
+  })
 })
