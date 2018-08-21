@@ -145,7 +145,34 @@
 
 
             socket.emit('new-player', { x: player.sprite.x, y: player.sprite.y, angle: player.sprite.rotation })
-            socket.on('create-player', function (state) {
+            // listen for other players connecting
+            socket.on('update-players', function (players_data) {
+                var players_found = {};
+                // Loop over all the player data received
+                for (var id in players_data) {
+                    // If the player hasn't been created yet
+                    if (other_players[id] == undefined && id != socket.id) { //Make sure you don't create yourself
+                        var data = players_data[id];
+                        var p = CreateShip(1, data.x, data.y, data.angle);
+                        other_players[id] = p;
+                        console.log("Created new player at (" + data.x + ", " + data.y + ")");
+                    }
+                    players_found[id] = true;
+
+                    // Update positions of other players
+                    if (id != socket.id){
+                        other_players[id].x = players_data[id].x; //Update target, not actual position, so we can interpolate
+                        other_players[id].y = players_data[id].y;
+                        other_players[id].rotation = players_data[id].angle
+                    }
+                    // Check if a player is missing and delete them
+                    for (var id in other_players){
+                        if(!players_found[id]){
+                            other_players[id].destroy();
+                            delete other_players[id];
+                        }
+                    }
+                }
                 // CreateShip is a function I've already defined to create and return a sprite 
                 CreateShip(1, state.x, state.y, state.angle)
             })
