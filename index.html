@@ -114,12 +114,13 @@
                 game.load.image('ship' + String(i) + '_3', ASSET_URL + 'ship' + String(i) + '_3.png');
                 game.load.image('ship' + String(i) + '_4', ASSET_URL + 'ship' + String(i) + '_4.png');
             }
-
+            
             game.load.image('bullet', ASSET_URL + 'cannon_ball.png');
             game.load.image('water', ASSET_URL + 'water_tile.png');
         }
-
+        
         function create() {
+            var socket = io(); // This triggers the 'connection' event on the server
             // Create water tiles 
             for (var i = 0; i <= WORLD_SIZE.w / 64 + 1; i++) {
                 for (var j = 0; j <= WORLD_SIZE.h / 64 + 1; j++) {
@@ -143,8 +144,11 @@
             game.camera.y = player.sprite.y - WINDOW_HEIGHT / 2;
 
 
-            var socket = io(); // This triggers the 'connection' event on the server
-            socket.emit('new-player',{x:player.sprite.x,y:player.sprite.y,angle:player.sprite.rotation})
+            socket.emit('new-player', { x: player.sprite.x, y: player.sprite.y, angle: player.sprite.rotation })
+            socket.on('create-player', function (state) {
+                // CreateShip is a function I've already defined to create and return a sprite 
+                CreateShip(1, state.x, state.y, state.angle)
+            })
         }
 
         function GameLoop() {
