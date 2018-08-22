@@ -20,16 +20,16 @@ var players = {};
 io.on('connection', function (socket) {
   console.log("New client has connected with id:", socket.id);
   // Listen for new-player event on this client 
-  socket.on('new-player', function (state_data) {
-    console.log("New player has state:", state_data);
+  socket.on('new-player', function (state) {
+    console.log("New player has state:", state);
     // add new player to dict
-    players[socket.id] = state_data;
+    players[socket.id] = state;
     // send an update event
     io.emit('update-players', players);
   })
 
   // Listen for a disconnect and update player table
-  socket.on('disconnect', function () {
+  socket.on('disconnect', function (state) {
     // delete player from dict on disconnect
     delete players[socket.id];
     // send an update event

@@ -125,7 +125,7 @@
         }
 
         function create() {
-            var socket = io(); // This triggers the 'connection' event on the server
+            socket = io(); // This triggers the 'connection' event on the server
             // Create water tiles 
             for (var i = 0; i <= WORLD_SIZE.w / 64 + 1; i++) {
                 for (var j = 0; j <= WORLD_SIZE.h / 64 + 1; j++) {
