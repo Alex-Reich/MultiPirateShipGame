@@ -10,33 +10,35 @@ app.get("/", function (request, response) {
 
 // Listen on port 5000
 app.set('port', (process.env.PORT || 5000));
-http.listen(app.get('port'), function(){
-  console.log('listening on port',app.get('port'));
+http.listen(app.get('port'), function () {
+  console.log('listening on port', app.get('port'));
 });
 
 // create dict to keep all players as key/value pairs
 var players = {};
 // Tell Socket.io to start accepting connections
-io.on('connection', function(socket){
-  console.log("New client has connected with id:",socket.id);
-  socket.on('new-player',function(state_data){ // Listen for new-player event on this client 
-    console.log("New player has state:",state_data);
+io.on('connection', function (socket) {
+  console.log("New client has connected with id:", socket.id);
+  // Listen for new-player event on this client 
+  socket.on('new-player', function (state_data) {
+    console.log("New player has state:", state_data);
     // add new player to dict
     players[socket.id] = state_data;
     // send an update event
-    io.emit('update-players',players);
+    io.emit('update-players', players);
   })
-  socket.on('disconnect', function(){
+
+  // Listen for a disconnect and update player table
+  socket.on('disconnect', function () {
     // delete player from dict on disconnect
     delete players[socket.id];
-
     // send an update event
-    io.emit('update-players',players);
+    io.emit('update-players', players);
   })
 
   // Listen for move events and tell all other clients that something has moved
-  socket.on('move-player', function(position_data){
-    if(players[socket.id] == undefined) return;
+  socket.on('move-player', function (position_data) {
+    if (players[socket.id] == undefined) return;
     players[socket.id].x = position_data.x;
     players[socket.id].y = position_data.y;
     players[socket.id].angle = position_data.angle;
@@ -44,8 +46,8 @@ io.on('connection', function(socket){
   })
 
   // Listen for shoot-bullet events and add it to our bullet array
-  
-  
+
+
   // Update the bullets 60 times per frame and send update
 
 })

@@ -34,6 +34,8 @@
         var game = new Phaser.Game(WINDOW_WIDTH, WINDOW_HEIGHT, Phaser.AUTO, '', { preload: preload, create: create, update: GameLoop });
 
         var WORLD_SIZE = { w: 750, h: 500 };
+        
+        var socket; //Declared here, initialized in 'create' function
         var other_players = {};
 
         var water_tiles = [];
@@ -87,6 +89,9 @@
                 } else {
                     this.sprite.alpha = 1;
                 }
+
+                // Tell the server we've moved
+                socket.emit('move-player', {x:this.sprite.x, y:this.sprite.y, angle:this.sprite.rotation})
 
             }
 
