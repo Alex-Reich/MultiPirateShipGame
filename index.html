@@ -165,12 +165,12 @@
                         other_players[id].y = players_data[id].y;
                         other_players[id].rotation = players_data[id].angle
                     }
-                    // Check if a player is missing and delete them
-                    for (var id in other_players) {
-                        if (!players_found[id]) {
-                            other_players[id].destroy();
-                            delete other_players[id];
-                        }
+                }
+                // Check if a player is missing and delete them
+                for (var id in other_players) {
+                    if (!players_found[id]) {
+                        other_players[id].destroy();
+                        delete other_players[id];
                     }
                 }
             })
@@ -185,6 +185,24 @@
             game.camera.x += (camera_x - game.camera.x) * 0.08;
             game.camera.y += (camera_y - game.camera.y) * 0.08;
 
+            // Each player is responsible for bringing their own alpha back up on their own client
+            // Make sure other players flash back to alpha = 1 when they're hit
+
+
+            // // Interpolate all players to where they should be
+            //     for(var id in other_players){
+            //         var p = other_players[id];
+            //         if(p.target_x != undeined){
+            //             p.x += (p.target_x - p.x) * 0.16;
+            //             p.y += (p.target_y - p.y) * 0.16;
+            //             // Interpolate angle while avoiding the positive negative issue
+            //             var angle = p.target_rotation;
+            //             var dir = (angle - p.rotation) / (Math.PI * 2);
+            //             dir -= Math.round(dir);
+            //             dir = dir * Math.PI * 2;
+            //             p.rotation += dir * 0.16;
+            //         }
+            //     }
 
             // Update bullets 
             for (var i = 0; i < bullet_array.length; i++) {

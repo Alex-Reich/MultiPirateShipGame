@@ -14,9 +14,9 @@ http.listen(app.get('port'), function(){
   console.log('listening on port',app.get('port'));
 });
 
-// Tell Socket.io to start accepting connections
 // create dict to keep all players as key/value pairs
 var players = {};
+// Tell Socket.io to start accepting connections
 io.on('connection', function(socket){
   console.log("New client has connected with id:",socket.id);
   socket.on('new-player',function(state_data){ // Listen for new-player event on this client 
@@ -29,6 +29,23 @@ io.on('connection', function(socket){
   socket.on('disconnect', function(){
     // delete player from dict on disconnect
     delete players[socket.id];
+
     // send an update event
+    io.emit('update-players',players);
   })
+
+  // Listen for move events and tell all other clients that something has moved
+  socket.on('move-player', function(position_data){
+    if(players[socket.id] == undefined) return;
+    players[socket.id].x = position_data.x;
+    players[socket.id].y = position_data.y;
+    players[socket.id].angle = position_data.angle;
+    io.emit('update-players', players)
+  })
+
+  // Listen for shoot-bullet events and add it to our bullet array
+  
+  
+  // Update the bullets 60 times per frame and send update
+
 })
