@@ -34,7 +34,7 @@
         var game = new Phaser.Game(WINDOW_WIDTH, WINDOW_HEIGHT, Phaser.AUTO, '', { preload: preload, create: create, update: GameLoop });
 
         var WORLD_SIZE = { w: 750, h: 500 };
-        
+
         var socket; //Declared here, initialized in 'create' function
         var other_players = {};
 
@@ -74,12 +74,15 @@
                 if (game.input.activePointer.leftButton.isDown && !this.shot) {
                     var speed_x = Math.cos(this.sprite.rotation + Math.PI / 2) * 20;
                     var speed_y = Math.sin(this.sprite.rotation + Math.PI / 2) * 20;
-                    var bullet = {};
-                    bullet.speed_x = speed_x;
-                    bullet.speed_y = speed_y;
-                    bullet.sprite = game.add.sprite(this.sprite.x + bullet.speed_x, this.sprite.y + bullet.speed_y, 'bullet');
-                    bullet_array.push(bullet);
+                    // Removed from client because server is now simulating bullets. Client just renders bullet locations.
+                    // var bullet = {};
+                    // bullet.speed_x = speed_x;
+                    // bullet.speed_y = speed_y;
+                    // bullet.sprite = game.add.sprite(this.sprite.x + bullet.speed_x, this.sprite.y + bullet.speed_y, 'bullet');
+                    // bullet_array.push(bullet);
                     this.shot = true;
+                    // Telling the server we shot a bullet
+                    socket.emit('shoot-bullet', { x: this.sprite.x, y: this.sprite.y, angle: this.sprite.rotation, speed_x: speed_x, speed_y: speed_y })
                 }
                 if (!game.input.activePointer.leftButton.isDown) this.shot = false;
 
@@ -91,7 +94,7 @@
                 }
 
                 // Tell the server we've moved
-                socket.emit('move-player', {x:this.sprite.x, y:this.sprite.y, angle:this.sprite.rotation})
+                socket.emit('move-player', { x: this.sprite.x, y: this.sprite.y, angle: this.sprite.rotation })
 
             }
 
