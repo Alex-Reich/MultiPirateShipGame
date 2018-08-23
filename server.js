@@ -61,8 +61,8 @@ io.on('connection', function (socket) {
 function ServerGameLoop() {
   for (var i = 0; i < bullet_array.length; i++) {
     var bullet = bullet_array[i];
-    bullet.x += bullet.speed_x;
-    bullet.y += bullet.speed_y;
+    bullet.x += bullet.speed_x * 0.25;
+    bullet.y += bullet.speed_y * 0.25;
 
     // Check if this bullet is close enough to hit a player
     for (var id in players) {
