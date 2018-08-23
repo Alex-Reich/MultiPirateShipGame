@@ -16,6 +16,8 @@ http.listen(app.get('port'), function () {
 
 // create dict to keep all players as key/value pairs
 var players = {};
+// Track all bullets to update them on the server
+var bullet_array = [];
 // Tell Socket.io to start accepting connections
 io.on('connection', function (socket) {
   console.log("New client has connected with id:", socket.id);
@@ -46,8 +48,43 @@ io.on('connection', function (socket) {
   })
 
   // Listen for shoot-bullet events and add it to our bullet array
-
-
-  // Update the bullets 60 times per frame and send update
-
+  socket.on('shoot-bullet', function (data) {
+    if (players[socket.id] == undefined) return;
+    var new_bullet = data;
+    // Attach id of the player to the bullet
+    data.owner_id = socket.id;
+    bullet_array.push(new_bullet);
+  })
 })
+
+// Update the bullets 60 times per frame and send update
+function ServerGameLoop() {
+  for (var i = 0; i < bullet_array.length; i++) {
+    var bullet = bullet_array[i];
+    bullet.x += bullet.speed_x;
+    bullet.y += bullet.speed_y;
+
+    // Check if this bullet is close enough to hit a player
+    for (var id in players) {
+      if (bullet.owner_id != id) {
+        // And your own bullet shouldn't kill you
+        var dx = players[id].x - bullet.x;
+        var dy = players[id].y - bullet.y;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 70) {
+          // Tell everyone this player got hit
+          io.emit('player-hit', id);
+        }
+      }
+    }
+
+    // Remove bullet if it goes too far off screen
+    if (bullet.x < -10 || bullet.x > 1000 || bullet.y < -10 || bullet.y > 1000) {
+      bullet_array.splice(i, 1);
+      i--;
+    }
+  }
+  // Tell everyone where the bullets are by sending the whole array
+  io.emit("bullets-update", bullet_array);
+}
+setInterval(ServerGameLoop, 16);

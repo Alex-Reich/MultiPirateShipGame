@@ -182,6 +182,26 @@
                     }
                 }
             })
+            
+            // Listen for bullet update events
+            socket.on('bullets-update', function(server_bullet_array) {
+                // If there's not enough bullets on the client, create them
+                for (var i=0; i<server_bullet_array.length;i++) {
+                    if (bullet_array[i] == undefined) {
+                        bullet_array[i] = game.add.sprite(server_bullet_array[i].x, server_bullet_array[i].y, 'bullet');
+                    } else {
+                        // Otherwise, just update it
+                        bullet_array[i].x = server_bullet_array[i].x;
+                        bullet_array[i].y = server_bullet_array[i].y;
+                    }
+                }
+                // Else if there are too many, delete the extra
+                for (var i = server_bullet_array.length; i<bullet_array.length; i++){
+                    bullet_array[i].destroy();
+                    bullet_array.splice(i,1);
+                    i--;
+                }
+            })
         }
 
         function GameLoop() {
@@ -212,18 +232,19 @@
             //         }
             //     }
 
+            // Removed the section bellow because bullets are updated on server now.
             // Update bullets 
-            for (var i = 0; i < bullet_array.length; i++) {
-                var bullet = bullet_array[i];
-                bullet.sprite.x += bullet.speed_x * 0.25;
-                bullet.sprite.y += bullet.speed_y * 0.25;
-                // Remove if it goes too far off screen 
-                if (bullet.sprite.x < -10 || bullet.sprite.x > WORLD_SIZE.w || bullet.sprite.y < -10 || bullet.sprite.y > WORLD_SIZE.h) {
-                    bullet.sprite.destroy();
-                    bullet_array.splice(i, 1);
-                    i--;
-                }
-            }
+            // for (var i = 0; i < bullet_array.length; i++) {
+            //     var bullet = bullet_array[i];
+            //     bullet.sprite.x += bullet.speed_x * 0.25;
+            //     bullet.sprite.y += bullet.speed_y * 0.25;
+            //     // Remove if it goes too far off screen 
+            //     if (bullet.sprite.x < -10 || bullet.sprite.x > WORLD_SIZE.w || bullet.sprite.y < -10 || bullet.sprite.y > WORLD_SIZE.h) {
+            //         bullet.sprite.destroy();
+            //         bullet_array.splice(i, 1);
+            //         i--;
+            //     }
+            // }
 
         }
 
