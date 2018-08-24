@@ -104,7 +104,7 @@
         function CreateShip(type, x, y, angle) {
             // type is an int that can be between 1 and 6 inclusive 
             // returns the sprite just created 
-            var sprite = game.add.sprite(x, y, 'ship' + String(type) + '_1');
+            var sprite = game.add.sprite(x, y, 'ship' + String(Math.floor(Math.random() * 6) + 1  ) + '_1');
             sprite.rotation = angle;
             sprite.anchor.setTo(0.5, 0.5);
             return sprite;
